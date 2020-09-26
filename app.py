@@ -35,7 +35,6 @@ def set_responses():
 def show_question(num):
     responses = session["responses"]
     survey = surveys[session["survey"]]
-    question = survey.questions[num]
     if len(responses) == len(survey.questions):
         flash("You have completed the survey.")
         return redirect("/thank-you")
@@ -43,11 +42,13 @@ def show_question(num):
         flash("Invalid question url. Please answer questions in order.")
         return redirect(f"/questions/{len(responses)}")
 
+    question = survey.questions[num]
     return render_template(
         "question.html",
         question=question.question,
         choices=question.choices,
         title=survey.title,
+        text=question.allow_text,
         num=num,
     )
 
@@ -56,12 +57,17 @@ def show_question(num):
 def record_answer():
     survey = surveys[session["survey"]]
     data = request.form["answer"]
-    num = int(request.form["number"]) + 1
-    next_num = str(num)
+    num = int(request.form["number"])
+    next_num = str(num + 1)
     resp = session["responses"]
-    resp.append(data)
+    if survey.questions[num].allow_text == True:
+        answer = {"answer": data, "comment": request.form["comment"]}
+        resp.append(answer)
+    else:
+        resp.append(data)
+
     session["responses"] = resp
-    if num == len(survey.questions):
+    if int(next_num) == len(survey.questions):
         page = "/thank-you"
     else:
         page = f"/questions/{next_num}"
@@ -70,4 +76,10 @@ def record_answer():
 
 @app.route("/thank-you")
 def thanks():
-    return render_template("thanks.html")
+    survey = surveys[session["survey"]].questions
+    questions = []
+    for q in survey:
+        questions.append(q.question)
+    responses = session["responses"]
+    answers = dict(zip(questions, responses))
+    return render_template("thanks.html", answers=answers)

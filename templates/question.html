@@ -3,17 +3,30 @@
 {% block title %}{{title}}{% endblock %}
 
 {%block content %}
+<div class="container-fluid">
 <h1>{{title}}</h1>
-
-<form action="/answer" method="POST">
-    <p>{{question}}</p>
-    {% for choice in choices %}
-    <label>
-        <input required type="radio" name="answer" value="{{choice}}">
-        {{choice}}
-    </label>
-    {% endfor %}
-    <input name="number" type="hidden" value="{{num}}">
-    <input type="submit" value="next" />
-</form>
+    <form action="/answer" method="POST">
+        <div class="form-group">
+        <p>{{question}}</p>
+            {% for choice in choices %}
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" required type="radio" name="answer" value="{{choice}}">
+                    {{choice}}
+                </label>
+            </div>
+            {% endfor %}
+            {% if text == True %}
+            <br>
+            <label>Comments:
+                <textarea class="form-control" name="comment" id="comment" cols="40" rows="5"></textarea>
+            </label>
+            <br>
+            {% endif %}
+        </div>
+        <input name="number" type="hidden" value="{{num}}">
+        <br>
+        <input class="btn btn-primary" type="submit" value="next" />
+    </form>
+</div>
 {% endblock %}

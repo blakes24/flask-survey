@@ -3,7 +3,7 @@
 {% block title %}Surveys{% endblock %}
 
 {%block content %}
-<h1>Surveys</h1>
+{# <h1>Surveys</h1>
 <h3>Choose a survey to complete.</h3>
 <form action="/start">
     <label for="survey">Pick a survey:</label>
@@ -11,7 +11,25 @@
         {% for survey in options %}
         <option value="{{survey}}">{{survey}}</option>
         {% endfor %}
-    </select>
-    <input type="submit" value="Submit" />
-</form>
+    </select> 
+    <br>
+    <input class="btn btn-primary" type="submit" value="Submit" />
+</form> #}
+<div class="jumbotron">
+    <div class="container">
+    <h1 class="display-4">Surveys</h1>
+    <p class="lead">Choose a survey to complete.</p>
+    <hr class="my-4">
+    <form action="/start">
+        <label for="survey">Pick a survey:</label>
+        <select class="form-control" name="survey" id="surveys">
+            {% for survey in options %}
+            <option value="{{survey}}">{{survey}}</option>
+            {% endfor %}
+        </select> 
+        <br>
+        <input class="btn btn-primary" type="submit" value="Submit" />
+    </form>
+    </div>
+</div>
 {% endblock %}
